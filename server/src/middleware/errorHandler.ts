@@ -1,20 +1,36 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 interface ErrorResponse {
-  message: string;
+  success: boolean;
+  error: string;
   stack?: string;
 }
 
 export const errorHandler = (
-  err: Error,
-  req: Request,
+  err: any,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  
+  let statusCode = res.statusCode !== 200 ? res.statusCode : 500;
+  let message = err.message;
+
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    statusCode = 400;
+    const messages = Object.values(err.errors).map((e: any) => e.message);
+    message = messages.join(', ');
+  }
+
+  // Mongoose cast error (invalid ObjectId)
+  if (err.name === 'CastError' && err.kind === 'ObjectId') {
+    statusCode = 400;
+    message = 'Invalid ID format';
+  }
+
   const response: ErrorResponse = {
-    message: err.message,
+    success: false,
+    error: message,
   };
 
   if (process.env.NODE_ENV === 'development') {

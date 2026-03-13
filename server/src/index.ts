@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/database';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
+import recipeRoutes from './routes/recipe.routes';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/health', healthRoutes);
+app.use('/api/recipes', recipeRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

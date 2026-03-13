@@ -136,6 +136,163 @@ recipe-manager/
 ### Health Check
 - `GET /api/health` - Check server status
 
+### Recipe Management
+
+#### Get All Recipes
+```http
+GET /api/recipes
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "...",
+      "name": "Recipe Name",
+      "ingredients": ["ingredient 1", "ingredient 2"],
+      "instructions": "Detailed cooking instructions...",
+      "cuisine": "Italian",
+      "difficulty": "medium",
+      "prepTime": 15,
+      "cookTime": 30,
+      "servings": 4,
+      "imageUrl": "https://...",
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
+}
+```
+
+#### Get Recipe by ID
+```http
+GET /api/recipes/:id
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "...",
+    "name": "Recipe Name",
+    "ingredients": ["ingredient 1", "ingredient 2"],
+    "instructions": "Detailed cooking instructions...",
+    "cuisine": "Italian",
+    "difficulty": "medium",
+    "prepTime": 15,
+    "cookTime": 30,
+    "servings": 4,
+    "imageUrl": "https://...",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
+```
+
+#### Create Recipe
+```http
+POST /api/recipes
+Content-Type: application/json
+
+{
+  "name": "Recipe Name",
+  "ingredients": ["ingredient 1", "ingredient 2"],
+  "instructions": "Detailed instructions (50-5000 chars)...",
+  "cuisine": "Italian",
+  "difficulty": "medium",
+  "prepTime": 15,
+  "cookTime": 30,
+  "servings": 4,
+  "imageUrl": "https://..."
+}
+```
+
+**Required fields:**
+- `name` (3-200 characters)
+- `ingredients` (array, minimum 1 item)
+- `instructions` (50-5000 characters)
+- `prepTime` (number, minutes)
+- `cookTime` (number, minutes)
+- `servings` (number, minimum 1)
+
+**Optional fields:**
+- `cuisine` (default: "Other")
+- `difficulty` ("easy", "medium", or "hard", default: "medium")
+- `imageUrl`
+
+Response (Status 201):
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "...",
+    "name": "Recipe Name",
+    ...
+  }
+}
+```
+
+#### Update Recipe
+```http
+PUT /api/recipes/:id
+Content-Type: application/json
+
+{
+  "name": "Updated Name",
+  "difficulty": "hard"
+}
+```
+
+**Note:** All fields are optional for updates (partial update supported).
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "...",
+    "name": "Updated Name",
+    ...
+  }
+}
+```
+
+#### Delete Recipe
+```http
+DELETE /api/recipes/:id
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "message": "Recipe deleted successfully"
+  }
+}
+```
+
+### Error Responses
+
+All error responses follow this format:
+
+```json
+{
+  "success": false,
+  "error": "Error message describing what went wrong"
+}
+```
+
+**Status Codes:**
+- `200 OK` - Successful GET, PUT, DELETE
+- `201 Created` - Successful POST
+- `400 Bad Request` - Validation errors, invalid ID format
+- `404 Not Found` - Recipe not found
+- `500 Internal Server Error` - Server errors
+
 ## 🔒 Environment Variables
 
 ### Backend (`/server/.env`)

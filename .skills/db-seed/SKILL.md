@@ -33,8 +33,7 @@ Create `server/src/seeds/data/recipes.json`:
 ```json
 [
   {
-    "title": "Classic Chocolate Chip Cookies",
-    "description": "Delicious homemade chocolate chip cookies that are crispy on the outside and chewy on the inside.",
+    "name": "Classic Chocolate Chip Cookies",
     "ingredients": [
       "2 1/4 cups all-purpose flour",
       "1 tsp baking soda",
@@ -46,29 +45,16 @@ Create `server/src/seeds/data/recipes.json`:
       "2 tsp vanilla extract",
       "2 cups chocolate chips"
     ],
-    "instructions": [
-      "Preheat oven to 375°F (190°C)",
-      "Mix flour, baking soda, and salt in a bowl",
-      "Beat butter and sugars until creamy",
-      "Add eggs and vanilla, beat well",
-      "Gradually blend in flour mixture",
-      "Stir in chocolate chips",
-      "Drop rounded tablespoons onto ungreased cookie sheets",
-      "Bake 9-11 minutes or until golden brown",
-      "Cool on baking sheet for 2 minutes",
-      "Remove to wire rack to cool completely"
-    ],
+    "instructions": "Preheat oven to 375°F (190°C). Mix flour, baking soda, and salt in a bowl. Beat butter and sugars until creamy. Add eggs and vanilla, beat well. Gradually blend in flour mixture. Stir in chocolate chips. Drop rounded tablespoons onto ungreased cookie sheets. Bake 9-11 minutes or until golden brown. Cool on baking sheet for 2 minutes, then remove to wire rack to cool completely.",
+    "cuisine": "American",
+    "difficulty": "easy",
     "prepTime": 15,
     "cookTime": 11,
     "servings": 48,
-    "difficulty": "Easy",
-    "category": "Dessert",
-    "cuisine": "American",
-    "tags": ["cookies", "dessert", "chocolate", "baking"]
+    "imageUrl": "https://example.com/chocolate-chip-cookies.jpg"
   },
   {
-    "title": "Spaghetti Carbonara",
-    "description": "Authentic Italian pasta dish with eggs, cheese, and pancetta.",
+    "name": "Spaghetti Carbonara",
     "ingredients": [
       "400g spaghetti",
       "200g pancetta or guanciale, diced",
@@ -77,29 +63,15 @@ Create `server/src/seeds/data/recipes.json`:
       "Black pepper to taste",
       "Salt for pasta water"
     ],
-    "instructions": [
-      "Bring large pot of salted water to boil",
-      "Cook spaghetti according to package directions",
-      "While pasta cooks, fry pancetta until crispy",
-      "Beat eggs and mix with grated cheese",
-      "Drain pasta, reserving 1 cup pasta water",
-      "Remove pan from heat, add pasta to pancetta",
-      "Quickly mix in egg mixture, stirring constantly",
-      "Add pasta water to achieve creamy consistency",
-      "Season with black pepper",
-      "Serve immediately"
-    ],
+    "instructions": "Bring large pot of salted water to boil. Cook spaghetti according to package directions. While pasta cooks, fry pancetta until crispy. Beat eggs and mix with grated cheese. Drain pasta, reserving 1 cup pasta water. Remove pan from heat, add pasta to pancetta. Quickly mix in egg mixture, stirring constantly. Add pasta water to achieve creamy consistency. Season with black pepper and serve immediately.",
+    "cuisine": "Italian",
+    "difficulty": "medium",
     "prepTime": 10,
     "cookTime": 15,
-    "servings": 4,
-    "difficulty": "Medium",
-    "category": "Main Course",
-    "cuisine": "Italian",
-    "tags": ["pasta", "italian", "quick", "dinner"]
+    "servings": 4
   },
   {
-    "title": "Caesar Salad",
-    "description": "Classic Caesar salad with homemade dressing and croutons.",
+    "name": "Caesar Salad",
     "ingredients": [
       "2 romaine lettuce heads",
       "1/2 cup Caesar dressing",
@@ -112,21 +84,12 @@ Create `server/src/seeds/data/recipes.json`:
       "2 tsp Worcestershire sauce",
       "1/2 cup olive oil"
     ],
-    "instructions": [
-      "Wash and dry lettuce, tear into pieces",
-      "Make dressing: blend garlic, anchovies, lemon juice, Dijon, and Worcestershire",
-      "Slowly drizzle in olive oil while blending",
-      "Toss lettuce with dressing",
-      "Top with Parmesan and croutons",
-      "Serve immediately"
-    ],
+    "instructions": "Wash and dry lettuce, tear into pieces. Make dressing by blending garlic, anchovies, lemon juice, Dijon, and Worcestershire. Slowly drizzle in olive oil while blending. Toss lettuce with dressing. Top with Parmesan and croutons. Serve immediately.",
+    "cuisine": "American",
+    "difficulty": "easy",
     "prepTime": 15,
     "cookTime": 0,
-    "servings": 4,
-    "difficulty": "Easy",
-    "category": "Salad",
-    "cuisine": "American",
-    "tags": ["salad", "vegetarian", "quick", "healthy"]
+    "servings": 4
   }
 ]
 ```
