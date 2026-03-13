@@ -1,0 +1,506 @@
+# Cursor AI Rules - Recipe Manager Project
+
+## TypeScript Standards
+
+### Strict Mode
+- Always use TypeScript strict mode (enabled in tsconfig.json)
+- No implicit `any` types
+- Strict null checks enabled
+- No unused locals or parameters (except prefixed with `_`)
+
+### Type Definitions
+```typescript
+// ✅ GOOD: Explicit types
+interface Recipe {
+  id: string;
+  title: string;
+  ingredients: Ingredient[];
+  instructions: string[];
+}
+
+// ❌ BAD: Implicit any
+function processRecipe(data) {
+  return data.title;
+}
+
+// ✅ GOOD: Explicit function signature
+function processRecipe(data: Recipe): string {
+  return data.title;
+}
+```
+
+### Type Imports
+```typescript
+// ✅ GOOD: Type-only imports
+import type { Request, Response } from 'express';
+import type { Recipe } from '../types';
+
+// Use regular imports for values
+import express from 'express';
+```
+
+## React Component Patterns
+
+### Functional Components Only
+```typescript
+// ✅ GOOD: Functional component with TypeScript
+interface RecipeCardProps {
+  recipe: Recipe;
+  onEdit: (id: string) => void;
+}
+
+export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onEdit }) => {
+  return (
+    <div className="recipe-card">
+      <h3>{recipe.title}</h3>
+      <button onClick={() => onEdit(recipe.id)}>Edit</button>
+    </div>
+  );
+};
+
+// ❌ BAD: Class components (don't use)
+class RecipeCard extends React.Component {
+  // ...
+}
+```
+
+### Hooks Best Practices
+```typescript
+// ✅ GOOD: Custom hooks with proper naming
+function useRecipes() {
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+  
+  return { recipes, loading };
+}
+
+// ✅ GOOD: Memoization when needed
+const filteredRecipes = useMemo(
+  () => recipes.filter((r) => r.category === category),
+  [recipes, category]
+);
+
+// ✅ GOOD: Callback memoization
+const handleEdit = useCallback(
+  (id: string) => {
+    // edit logic
+  },
+  [/* dependencies */]
+);
+```
+
+### Component Organization
+```typescript
+// ✅ GOOD: Organized component structure
+import React, { useState, useEffect } from 'react';
+import type { Recipe } from '../types';
+import { RecipeCard } from './RecipeCard';
+
+interface RecipeListProps {
+  category?: string;
+}
+
+export const RecipeList: React.FC<RecipeListProps> = ({ category }) => {
+  // 1. Hooks
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  
+  // 2. Effects
+  useEffect(() => {
+    // fetch recipes
+  }, [category]);
+  
+  // 3. Handlers
+  const handleEdit = (id: string) => {
+    // edit logic
+  };
+  
+  // 4. Render
+  return (
+    <div>
+      {recipes.map((recipe) => (
+        <RecipeCard key={recipe.id} recipe={recipe} onEdit={handleEdit} />
+      ))}
+    </div>
+  );
+};
+```
+
+## API Design Standards
+
+### RESTful Conventions
+```
+GET    /api/recipes           # List all recipes
+GET    /api/recipes/:id       # Get one recipe
+POST   /api/recipes           # Create recipe
+PUT    /api/recipes/:id       # Update recipe (full)
+PATCH  /api/recipes/:id       # Update recipe (partial)
+DELETE /api/recipes/:id       # Delete recipe
+```
+
+### Controller Pattern
+```typescript
+// ✅ GOOD: Async controller with error handling
+export const getRecipes = async (req: Request, res: Response) => {
+  try {
+    const recipes = await Recipe.find();
+    res.status(200).json({ success: true, data: recipes });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching recipes' 
+    });
+  }
+};
+```
+
+### Response Format
+```typescript
+// ✅ GOOD: Consistent response structure
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
+// Success response
+res.status(200).json({
+  success: true,
+  data: recipes,
+});
+
+// Error response
+res.status(400).json({
+  success: false,
+  message: 'Invalid recipe data',
+  error: error.message,
+});
+```
+
+## Error Handling Patterns
+
+### Backend Error Handling
+```typescript
+// ✅ GOOD: Centralized error handler
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
+  
+  res.status(statusCode).json({
+    success: false,
+    message: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+  });
+};
+
+// ✅ GOOD: Custom error classes
+class NotFoundError extends Error {
+  statusCode = 404;
+  
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
+```
+
+### Frontend Error Handling
+```typescript
+// ✅ GOOD: Error boundaries for React
+class ErrorBoundary extends React.Component<Props, State> {
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught:', error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+    return this.props.children;
+  }
+}
+
+// ✅ GOOD: Async error handling in components
+const fetchRecipes = async () => {
+  try {
+    setLoading(true);
+    const response = await api.get('/recipes');
+    setRecipes(response.data);
+  } catch (error) {
+    setError(error instanceof Error ? error.message : 'Unknown error');
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+## Testing Requirements
+
+### Backend Tests
+```typescript
+// ✅ GOOD: Unit test structure
+describe('Recipe Controller', () => {
+  describe('getRecipes', () => {
+    it('should return all recipes', async () => {
+      const mockRecipes = [{ id: '1', title: 'Test Recipe' }];
+      Recipe.find = jest.fn().mockResolvedValue(mockRecipes);
+      
+      const req = {} as Request;
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+      
+      await getRecipes(req, res);
+      
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockRecipes,
+      });
+    });
+  });
+});
+```
+
+### Frontend Tests
+```typescript
+// ✅ GOOD: Component test with React Testing Library
+import { render, screen, fireEvent } from '@testing-library/react';
+import { RecipeCard } from './RecipeCard';
+
+describe('RecipeCard', () => {
+  const mockRecipe = {
+    id: '1',
+    title: 'Test Recipe',
+    ingredients: [],
+    instructions: [],
+  };
+  
+  it('should render recipe title', () => {
+    render(<RecipeCard recipe={mockRecipe} onEdit={jest.fn()} />);
+    expect(screen.getByText('Test Recipe')).toBeInTheDocument();
+  });
+  
+  it('should call onEdit when edit button is clicked', () => {
+    const onEdit = jest.fn();
+    render(<RecipeCard recipe={mockRecipe} onEdit={onEdit} />);
+    
+    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
+    expect(onEdit).toHaveBeenCalledWith('1');
+  });
+});
+```
+
+## Code Style Preferences
+
+### ESLint/Prettier Alignment
+- Single quotes for strings
+- Semicolons required
+- 2 spaces for indentation
+- 100 character line width
+- Trailing commas in ES5 syntax
+- Arrow function parentheses always
+
+### Import Organization
+```typescript
+// ✅ GOOD: Import order
+// 1. External dependencies
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import axios from 'axios';
+
+// 2. Internal modules (absolute imports)
+import { Button } from '@/components/Button';
+import { useAuth } from '@/hooks/useAuth';
+
+// 3. Relative imports
+import { RecipeCard } from './RecipeCard';
+import type { Recipe } from '../types';
+
+// 4. Styles
+import './RecipeList.css';
+
+// ❌ BAD: Mixed import order
+import './RecipeList.css';
+import React from 'react';
+import { RecipeCard } from './RecipeCard';
+```
+
+### Naming Conventions
+```typescript
+// Files
+recipe-card.tsx          // Components
+use-recipes.ts          // Hooks
+api.ts                  // Services
+recipe.model.ts         // Models
+recipe.routes.ts        // Routes
+recipe.controller.ts    // Controllers
+
+// Variables and Functions
+const userName = 'John';           // camelCase
+const MAX_RETRIES = 3;             // UPPER_SNAKE_CASE for constants
+function fetchUserData() {}        // camelCase
+
+// Types and Interfaces
+interface User {}                  // PascalCase
+type Recipe = {};                  // PascalCase
+enum UserRole {}                   // PascalCase
+
+// Components
+export const RecipeCard = () => {};  // PascalCase
+```
+
+### Function Preferences
+```typescript
+// ✅ GOOD: Arrow functions for consistency
+const calculateTotal = (items: Item[]): number => {
+  return items.reduce((sum, item) => sum + item.price, 0);
+};
+
+// ✅ GOOD: Async/await over promises
+const fetchData = async (): Promise<Recipe[]> => {
+  const response = await api.get('/recipes');
+  return response.data;
+};
+
+// ❌ BAD: Promise chains
+const fetchData = (): Promise<Recipe[]> => {
+  return api.get('/recipes').then(response => response.data);
+};
+```
+
+### Code Organization
+```typescript
+// ✅ GOOD: Destructuring
+const { title, ingredients, instructions } = recipe;
+
+// ✅ GOOD: Spread operator
+const updatedRecipe = { ...recipe, title: 'New Title' };
+
+// ✅ GOOD: Optional chaining
+const author = recipe?.author?.name;
+
+// ✅ GOOD: Nullish coalescing
+const port = process.env.PORT ?? 5001;
+
+// ✅ GOOD: Template literals
+const message = `Recipe ${title} has ${ingredients.length} ingredients`;
+```
+
+## MongoDB/Mongoose Patterns
+
+### Schema Definition
+```typescript
+// ✅ GOOD: Typed Mongoose schema
+import { Schema, model, Document } from 'mongoose';
+
+interface IRecipe extends Document {
+  title: string;
+  ingredients: string[];
+  instructions: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const recipeSchema = new Schema<IRecipe>(
+  {
+    title: { type: String, required: true, trim: true },
+    ingredients: [{ type: String, required: true }],
+    instructions: [{ type: String, required: true }],
+  },
+  { timestamps: true }
+);
+
+export const Recipe = model<IRecipe>('Recipe', recipeSchema);
+```
+
+## Performance Considerations
+
+### React Performance
+```typescript
+// ✅ GOOD: Use React.memo for expensive components
+export const RecipeCard = React.memo<RecipeCardProps>(({ recipe }) => {
+  return <div>{recipe.title}</div>;
+});
+
+// ✅ GOOD: Lazy loading
+const RecipeEditor = lazy(() => import('./RecipeEditor'));
+
+// ✅ GOOD: Code splitting
+<Suspense fallback={<Loading />}>
+  <RecipeEditor />
+</Suspense>
+```
+
+### Database Queries
+```typescript
+// ✅ GOOD: Select only needed fields
+const recipes = await Recipe.find().select('title ingredients');
+
+// ✅ GOOD: Use lean() for read-only data
+const recipes = await Recipe.find().lean();
+
+// ✅ GOOD: Pagination
+const recipes = await Recipe.find()
+  .skip((page - 1) * limit)
+  .limit(limit);
+```
+
+## Security Rules
+
+### Input Validation
+```typescript
+// ✅ GOOD: Validate and sanitize input
+import { body, validationResult } from 'express-validator';
+
+const validateRecipe = [
+  body('title').trim().isLength({ min: 1, max: 200 }).escape(),
+  body('ingredients').isArray({ min: 1 }),
+];
+
+// ✅ GOOD: Check validation results
+const errors = validationResult(req);
+if (!errors.isEmpty()) {
+  return res.status(400).json({ errors: errors.array() });
+}
+```
+
+### Environment Variables
+```typescript
+// ✅ GOOD: Never commit .env files
+// ✅ GOOD: Always provide .env.example
+// ✅ GOOD: Validate required env vars at startup
+const requiredEnvVars = ['MONGODB_URI', 'PORT'];
+requiredEnvVars.forEach((envVar) => {
+  if (!process.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+});
+```
+
+## Summary
+
+When writing code for this project:
+1. **Always use TypeScript** with strict mode
+2. **Functional components** with hooks only
+3. **RESTful API** design with consistent responses
+4. **Proper error handling** everywhere
+5. **Write tests** for new functionality
+6. **Follow ESLint/Prettier** rules
+7. **Organize imports** in the specified order
+8. **Use descriptive names** following conventions
+9. **Validate input** on the backend
+10. **Optimize performance** with memoization and lazy loading

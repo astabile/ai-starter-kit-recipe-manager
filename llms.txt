@@ -1,0 +1,139 @@
+# Recipe Manager - MERN Stack Application
+
+## Project Overview
+
+A production-ready recipe management application built with the MERN stack (MongoDB, Express, React, Node.js) and TypeScript. The application provides a foundation for managing recipes with a clean separation between frontend and backend, following modern web development best practices.
+
+## Technology Stack
+
+### Backend
+- **Runtime**: Node.js v22.x
+- **Framework**: Express v5.x
+- **Language**: TypeScript v5.x
+- **Database**: MongoDB with Mongoose ODM
+- **Security**: Helmet, CORS
+- **Performance**: Compression middleware
+- **Development**: Nodemon, ts-node
+
+### Frontend
+- **Library**: React v18.x
+- **Build Tool**: Vite v8.x
+- **Language**: TypeScript v5.x
+- **Styling**: Tailwind CSS v3.x
+- **Routing**: React Router v6.x
+- **HTTP Client**: Axios with interceptors
+- **Development**: Hot Module Replacement (HMR)
+
+### Development Tools
+- **Linting**: ESLint v10.x
+- **Formatting**: Prettier v3.x
+- **Package Manager**: npm workspaces
+- **Containerization**: Docker Compose for MongoDB
+- **Concurrency**: Concurrently for running multiple dev servers
+
+## Architecture
+
+### Monorepo Structure
+- `/server` - Backend API with Express + MongoDB
+- `/client` - Frontend React application
+- Root workspace manages both with npm workspaces
+
+### Backend Architecture
+```
+server/src/
+├── config/        # Database and app configuration
+├── routes/        # API route definitions
+├── controllers/   # Request handlers and business logic
+├── models/        # Mongoose schemas and models
+├── middleware/    # Express middleware (auth, error handling)
+└── utils/         # Shared utilities
+```
+
+### Frontend Architecture
+```
+client/src/
+├── components/    # Reusable UI components
+├── pages/         # Page-level components
+├── hooks/         # Custom React hooks
+├── services/      # API client and external services
+├── utils/         # Helper functions
+└── types/         # TypeScript type definitions
+```
+
+## Key Architectural Decisions
+
+1. **TypeScript Everywhere**: Strict type checking on both frontend and backend for better code quality and developer experience
+
+2. **Separation of Concerns**: Clear boundaries between routes, controllers, and models on backend; components, pages, and services on frontend
+
+3. **Environment-based Configuration**: Using dotenv for backend and Vite env vars for frontend
+
+4. **API Design**: RESTful API with `/api` prefix, JSON responses, proper HTTP status codes
+
+5. **Error Handling**: Centralized error handling middleware with development/production modes
+
+6. **Code Quality**: Matching ESLint and Prettier configs across frontend and backend
+
+## Important Conventions
+
+### Naming Conventions
+- **Files**: kebab-case for file names (e.g., `error-handler.ts`, `health.routes.ts`)
+- **Components**: PascalCase for React components (e.g., `RecipeCard.tsx`)
+- **Functions**: camelCase for functions and variables
+- **Constants**: UPPER_SNAKE_CASE for constants
+- **Types/Interfaces**: PascalCase with descriptive names
+
+### Folder Structure
+- Routes use `.routes.ts` suffix
+- Controllers use `.controller.ts` suffix
+- Models use `.model.ts` suffix
+- TypeScript types in dedicated `types/` directory
+
+### API Conventions
+- Base URL: `http://localhost:5001/api`
+- Health check: `GET /api/health`
+- RESTful resource naming (plural nouns)
+- Consistent response format
+
+## Entry Points
+
+### Backend
+- **Main**: `server/src/index.ts`
+- **Database Config**: `server/src/config/database.ts`
+- **Error Handling**: `server/src/middleware/errorHandler.ts`
+- **Health Check**: `server/src/routes/health.routes.ts`
+
+### Frontend
+- **Main**: `client/src/main.tsx`
+- **Root Component**: `client/src/App.tsx`
+- **API Client**: `client/src/services/api.ts`
+- **Styles**: `client/src/index.css` (Tailwind)
+
+## Development Ports
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5001`
+- MongoDB: `mongodb://localhost:27017`
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start MongoDB
+docker-compose up -d
+
+# Run both frontend and backend
+npm run dev
+```
+
+## Environment Variables
+
+### Backend (.env)
+- `PORT` - Server port (default: 5001)
+- `NODE_ENV` - Environment mode (development/production)
+- `MONGODB_URI` - MongoDB connection string
+
+### Frontend (.env)
+- `VITE_API_URL` - Backend API URL (default: http://localhost:5001/api)
