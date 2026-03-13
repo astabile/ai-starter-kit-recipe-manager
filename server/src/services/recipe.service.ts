@@ -61,7 +61,7 @@ export const updateRecipe = async (
 ): Promise<IRecipe> => {
   try {
     const recipe = await Recipe.findByIdAndUpdate(id, data, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true,
     });
     
