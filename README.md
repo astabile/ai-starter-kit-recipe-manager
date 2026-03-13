@@ -293,6 +293,47 @@ All error responses follow this format:
 - `404 Not Found` - Recipe not found
 - `500 Internal Server Error` - Server errors
 
+### AI Classification
+
+#### Classify Recipe
+```http
+POST /api/ai/classify
+Content-Type: application/json
+
+{
+  "name": "Recipe Name",
+  "ingredients": ["ingredient 1", "ingredient 2"],
+  "instructions": "Cooking instructions..."
+}
+```
+
+**Required fields:**
+- `name` (string)
+- `ingredients` (array of strings, minimum 1)
+- `instructions` (string, minimum 10 characters)
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "suggestedCuisine": "Italian",
+    "suggestedDifficulty": "easy",
+    "reasoning": "The recipe features traditional Italian ingredients and techniques..."
+  }
+}
+```
+
+**Cuisine Categories:**
+Italian, Mexican, Asian, French, American, Mediterranean, Indian, Other
+
+**Difficulty Assessment:**
+- **Easy**: Simple techniques, common ingredients, < 30 min total
+- **Medium**: Moderate techniques, 30-60 min total
+- **Hard**: Advanced techniques, special equipment, > 60 min total
+
+**AI Model:** GPT-4o-mini with temperature 0.3 for consistent classifications
+
 ## 🔒 Environment Variables
 
 ### Backend (`/server/.env`)
@@ -301,6 +342,7 @@ All error responses follow this format:
 PORT=5001
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/recipe-manager
+OPENAI_API_KEY=your-openai-api-key-here
 ```
 
 ### Frontend (`/client/.env`)
