@@ -78,32 +78,102 @@ npm run dev:server
 
 ```
 recipe-manager/
-├── client/                 # React frontend
+├── .skills/                      # Project-specific AI skills
+│   ├── test-backend/            # Backend testing workflow
+│   ├── deploy-docker/           # Docker deployment guide
+│   └── db-seed/                 # Database seeding workflow
+│
+├── client/                       # React frontend
 │   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── pages/         # Page components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── services/      # API service layer
-│   │   ├── utils/         # Utility functions
-│   │   └── types/         # TypeScript type definitions
-│   ├── .env.example       # Environment variables template
+│   │   ├── __tests__/           # Vitest component tests
+│   │   │   ├── components/      # Component test files
+│   │   │   └── setup.ts         # Test configuration
+│   │   ├── components/          # React components
+│   │   │   ├── AIButton.tsx     # AI classification button
+│   │   │   ├── RecipeCard.tsx   # Recipe card display
+│   │   │   ├── RecipeForm.tsx   # Create/edit form
+│   │   │   └── RecipeList.tsx   # Recipe grid layout
+│   │   ├── hooks/               # Custom React hooks
+│   │   │   └── useRecipes.ts    # Recipe state management
+│   │   ├── services/            # API service layer
+│   │   │   ├── api.ts           # Base axios client
+│   │   │   └── recipeApi.ts     # Typed recipe API client
+│   │   ├── types/               # TypeScript interfaces
+│   │   │   └── recipe.ts        # Recipe type definitions
+│   │   ├── App.tsx              # Main app component
+│   │   └── index.css            # Tailwind CSS imports
+│   ├── .env.example             # Environment variables template
+│   ├── vitest.config.ts         # Vitest configuration
 │   └── package.json
 │
-├── server/                # Node.js backend
+├── server/                       # Node.js backend
 │   ├── src/
-│   │   ├── routes/       # API routes
-│   │   ├── controllers/  # Request handlers
-│   │   ├── models/       # Mongoose models
-│   │   ├── middleware/   # Express middleware
-│   │   ├── utils/        # Utility functions
-│   │   └── config/       # Configuration files
-│   ├── .env.example      # Environment variables template
+│   │   ├── __tests__/           # Jest test suites
+│   │   │   ├── unit/            # Unit tests
+│   │   │   │   ├── recipe.service.test.ts
+│   │   │   │   └── ai.service.test.ts
+│   │   │   ├── integration/     # Integration tests
+│   │   │   │   ├── recipe.api.test.ts
+│   │   │   │   └── ai.api.test.ts
+│   │   │   └── setup.ts         # Test configuration
+│   │   ├── config/              # App configuration
+│   │   │   └── database.ts      # MongoDB connection
+│   │   ├── controllers/         # Request handlers
+│   │   │   ├── recipe.controller.ts
+│   │   │   └── ai.controller.ts
+│   │   ├── middleware/          # Express middleware
+│   │   │   └── errorHandler.ts  # Error handling
+│   │   ├── models/              # Mongoose schemas
+│   │   │   └── recipe.model.ts  # Recipe schema
+│   │   ├── routes/              # API routes
+│   │   │   ├── health.routes.ts
+│   │   │   ├── recipe.routes.ts
+│   │   │   └── ai.routes.ts
+│   │   ├── seeds/               # Database seeding
+│   │   │   ├── data/            # Seed data files
+│   │   │   │   └── recipes.json
+│   │   │   └── seedRecipes.ts   # Seed script
+│   │   ├── services/            # Business logic
+│   │   │   ├── recipe.service.ts
+│   │   │   └── ai.service.ts    # OpenAI integration
+│   │   └── index.ts             # Server entry point
+│   ├── .env.example             # Environment variables template
+│   ├── jest.config.js           # Jest configuration
 │   └── package.json
 │
-├── docker-compose.yml    # MongoDB container config
-├── package.json          # Root workspace configuration
-└── README.md
+├── docs/                         # Documentation
+│   ├── prompts/                 # Implementation prompts
+│   │   ├── starter-kit/         # Project setup prompts
+│   │   └── recipe-manager/      # Feature prompts
+│   ├── superpowers/             # Design & planning docs
+│   │   ├── specs/               # Design specifications
+│   │   └── plans/               # Implementation plans
+│   └── ai-skills-cheatsheet.md  # Skill usage reference
+│
+├── llms.txt                      # AI context file
+├── AGENTS.md                     # Development workflow guide
+├── .cursorrules                  # Coding standards
+├── docker-compose.yml            # MongoDB container config
+├── package.json                  # Root workspace configuration
+└── README.md                     # This file
 ```
+
+## 📚 Implementation Prompts
+
+This project was built using a systematic prompt-driven approach. All prompts used to build each feature are documented in the `/docs/prompts/` directory:
+
+### Starter Kit Prompts
+- **[001: MERN Project Setup](./docs/prompts/starter-kit/001_project_setup.md)** - Initial MERN stack configuration with TypeScript, ESLint, Prettier, and Docker
+- **[002: AI Ecosystem Setup](./docs/prompts/starter-kit/002_ai_ecosystem_setup.md)** - llms.txt, AGENTS.md, .cursorrules, and custom skills for AI-assisted development
+- **[003: Global Skills Installation](./docs/prompts/starter-kit/003_global_skills_installation.md)** - Superpowers and wshobson-agents skill collections
+
+### Recipe Manager Prompts
+- **[001: Backend CRUD Implementation](./docs/prompts/recipe-manager/001_backend_crud.md)** - Recipe model, service layer, controllers, and RESTful routes with Mongoose validation
+- **[002: AI Integration](./docs/prompts/recipe-manager/002_ai_integration.md)** - OpenAI GPT-4o-mini integration for automatic recipe classification
+- **[003: Frontend React Implementation](./docs/prompts/recipe-manager/003_frontend_react.md)** - React components, hooks, and Tailwind CSS UI with AI features
+- **[004: Testing Implementation](./docs/prompts/recipe-manager/004_testing_implementation.md)** - Comprehensive Jest (backend) and Vitest (frontend) test suites
+
+Each prompt includes context, goals, detailed specifications, and key takeaways. These serve as both documentation and a guide for understanding the implementation decisions.
 
 ## 🔧 Available Scripts
 
@@ -391,7 +461,7 @@ This project is licensed under the ISC License.
 
 ## 👤 Author
 
-Your Name
+Alejandro Stabile
 
 ## 🙏 Acknowledgments
 
